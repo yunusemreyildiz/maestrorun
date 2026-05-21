@@ -1,0 +1,10 @@
+appId: ${APP_ID}
+name: Example Login Smoke
+---
+- launchApp
+- tapOn: "Email"
+- inputText: ${TEST_EMAIL}
+- tapOn: "Password"
+- inputText: ${TEST_PASSWORD}
+- tapOn: "Login"
+- assertVisible: "Home"

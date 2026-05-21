@@ -1,0 +1,29 @@
+{
+  "name": "maestrorun",
+  "version": "1.0.0",
+  "private": false,
+  "type": "module",
+  "description": "maestRoRun: local Maestro mobile test automation with Slack reporting and a lightweight dashboard.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test:mobile": "node run-tests.js",
+    "test:nightly": "ENVIRONMENT=${ENVIRONMENT:-nightly} node run-tests.js",
+    "dashboard": "node scripts/dev-dashboard.js",
+    "dashboard:api": "node scripts/dashboard-server.js",
+    "dashboard:build": "vite build --config dashboard/vite.config.js",
+    "dashboard:serve": "node scripts/dashboard-server.js --serve-static"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^5.0.4",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "fast-xml-parser": "^5.2.5",
+    "lucide-react": "^0.468.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "vite": "^6.0.5"
+  }
+}

@@ -1,0 +1,9 @@
+# Run with: crontab schedules/crontab.example
+# Edit PROJECT_ROOT, npm path, and timing for your machine before installing.
+
+SHELL=/bin/zsh
+PROJECT_ROOT=/path/to/project-root
+PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin
+
+# Nightly regression at 02:00 local time.
+0 2 * * * cd "$PROJECT_ROOT" && npm run test:nightly >> "$PROJECT_ROOT/reports/nightly.log" 2>&1

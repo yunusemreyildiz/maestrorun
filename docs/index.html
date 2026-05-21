@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>maestRoRun · Local Maestro runner</title>
+    <meta name="description" content="Lightweight local Maestro automation runner for Android Emulator and iOS Simulator with dashboard, reports, and Slack alerts." />
+    <meta property="og:title" content="maestRoRun" />
+    <meta property="og:description" content="Local Maestro runner with dashboard, reports, and Slack alerts." />
+    <meta property="og:type" content="website" />
+    <meta name="github-repo" content="yunusemreyildiz/maestrorun" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b0c0f;
+        --surface: rgba(25, 27, 34, 0.82);
+        --text: #f7f7f8;
+        --muted: #9ba3b1;
+        --border: rgba(255, 255, 255, 0.1);
+        --accent: #64d2ff;
+        --accent-strong: #0a84ff;
+        --ror: #a78bfa;
+        --ror-strong: #7c3aed;
+        --pass: #34c759;
+        --shadow: rgba(0, 0, 0, 0.34);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top right, rgba(124, 58, 237, 0.18), transparent 28%),
+          radial-gradient(circle at 20% 80%, rgba(0, 122, 255, 0.12), transparent 24%),
+          var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { color: var(--ror); }
+
+      .wrap {
+        width: min(1080px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 48px 0 80px;
+      }
+
+      .hero {
+        text-align: center;
+        padding: 24px 0 56px;
+      }
+
+      .hero img {
+        width: min(820px, 100%);
+        height: auto;
+        border-radius: 28px;
+        box-shadow: 0 24px 80px var(--shadow);
+      }
+
+      .nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px 20px;
+        margin: 28px 0 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+
+      .nav a {
+        color: var(--text);
+        opacity: 0.92;
+      }
+
+      .badges {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 24px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 600;
+      }
+
+      .section {
+        margin-top: 56px;
+      }
+
+      .section h2 {
+        margin: 0 0 12px;
+        font-size: 1.6rem;
+        letter-spacing: -0.03em;
+      }
+
+      .section p.lead {
+        margin: 0 0 28px;
+        color: var(--muted);
+        max-width: 760px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 18px;
+      }
+
+      .card {
+        padding: 22px;
+        border-radius: 22px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        backdrop-filter: blur(20px) saturate(160%);
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+      }
+
+      .card h3 {
+        margin: 0 0 8px;
+        font-size: 1.05rem;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .code {
+        margin-top: 18px;
+        padding: 18px 20px;
+        border-radius: 18px;
+        border: 1px solid rgba(167, 139, 250, 0.22);
+        background: rgba(124, 58, 237, 0.08);
+        overflow-x: auto;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.92rem;
+        line-height: 1.7;
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 20px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 0.92rem;
+        border: 1px solid transparent;
+      }
+
+      .button.primary {
+        background: linear-gradient(135deg, var(--ror-strong), #9333ea);
+        color: white;
+      }
+
+      .button.secondary {
+        border-color: var(--border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+      }
+
+      .flow {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 18px;
+      }
+
+      .flow-step {
+        padding: 18px;
+        border-radius: 18px;
+        border: 1px dashed rgba(167, 139, 250, 0.28);
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .flow-step strong {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--ror);
+      }
+
+      .footer {
+        margin-top: 72px;
+        padding-top: 28px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 16px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 760px) {
+        .flow { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="hero">
+        <img src="./assets/banner.svg" alt="maestRoRun" />
+        <nav class="nav" aria-label="Primary">
+          <a href="#features">Features</a>
+          <a href="#quick-start">Quick Start</a>
+          <a href="#architecture">Architecture</a>
+          <a id="github-nav-link" href="#">GitHub</a>
+          <a href="https://maestro.mobile.dev/">Maestro</a>
+        </nav>
+        <div class="badges">
+          <span class="badge">Node.js 20+</span>
+          <span class="badge">Android Emulator</span>
+          <span class="badge">iOS Simulator</span>
+          <span class="badge">Slack Webhooks</span>
+          <span class="badge">React Dashboard</span>
+        </div>
+      </header>
+
+      <section class="section" id="intro">
+        <h2>Local Maestro automation, with a dashboard worth opening</h2>
+        <p class="lead">
+          maestRoRun wraps Maestro with Node.js orchestration, saved tests and suites, local reports,
+          optional Slack summaries, and a React dashboard that helps you run mobile flows without
+          rebuilding your own tooling every sprint.
+        </p>
+        <div class="cta-row">
+          <a class="button primary" id="github-cta-link" href="#">View on GitHub</a>
+          <a class="button secondary" href="#quick-start">Get Started</a>
+        </div>
+      </section>
+
+      <section class="section" id="features">
+        <h2>Features</h2>
+        <p class="lead">Everything you need to run Maestro locally and keep the team in the loop.</p>
+        <div class="grid">
+          <article class="card">
+            <h3>Dashboard-first workflow</h3>
+            <p>Trigger runs, manage saved tests/suites, inspect reports, and edit local settings from one UI.</p>
+          </article>
+          <article class="card">
+            <h3>Android & iOS ready</h3>
+            <p>Run against Android Emulator and iOS Simulator with device discovery built into the dashboard.</p>
+          </article>
+          <article class="card">
+            <h3>Reports & screenshots</h3>
+            <p>Store JSON summaries, JUnit output, and Maestro debug screenshots under `reports/`.</p>
+          </article>
+          <article class="card">
+            <h3>Slack summaries</h3>
+            <p>Send run summaries through Incoming Webhooks when a test batch finishes.</p>
+          </article>
+          <article class="card">
+            <h3>Nightly scheduling</h3>
+            <p>Save, install, or remove a local cron entry directly from the dashboard.</p>
+          </article>
+          <article class="card">
+            <h3>Starter-safe repo</h3>
+            <p>No private flows, credentials, or proprietary library data ship with the public repo.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="architecture">
+        <h2>Architecture</h2>
+        <p class="lead">A small stack with a clear split between UI, orchestration, and Maestro execution.</p>
+        <div class="flow">
+          <div class="flow-step">
+            <strong>1. Dashboard</strong>
+            React + Vite UI for config, library, reports, and run controls.
+          </div>
+          <div class="flow-step">
+            <strong>2. API</strong>
+            Express server orchestrates devices, env, reports, and cron.
+          </div>
+          <div class="flow-step">
+            <strong>3. Maestro</strong>
+            Executes YAML flows on Android Emulator or iOS Simulator.
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="quick-start">
+        <h2>Quick Start</h2>
+        <p class="lead">Clone the repo, install dependencies, copy the example env file, and open the dashboard.</p>
+        <div class="code">npm install
+cp .env.example .env
+npm run dashboard</div>
+        <p class="lead" style="margin-top: 18px;">Then open <strong>http://127.0.0.1:5173</strong>.</p>
+      </section>
+
+      <footer class="footer">
+        <span>maestRoRun · short name RoR</span>
+        <span>Inspired by polished open-source landing pages like <a href="https://github.com/appium/appium">Appium</a>.</span>
+      </footer>
+    </div>
+    <script>
+      const repo = document.querySelector('meta[name="github-repo"]')?.content;
+      if (repo && !repo.startsWith('YOUR_')) {
+        const url = `https://github.com/${repo}`;
+        for (const id of ['github-nav-link', 'github-cta-link']) {
+          const link = document.getElementById(id);
+          if (link) link.href = url;
+        }
+      }
+    </script>
+  </body>
+</html>

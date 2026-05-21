@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="maestRoRun logo">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#15121f"/>
+      <stop offset="100%" stop-color="#1a1030"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="32" fill="url(#bg)"/>
+  <rect x="1" y="1" width="126" height="126" rx="31" fill="none" stroke="rgba(167,139,250,0.35)" stroke-width="2"/>
+  <path d="M40 84 L64 34 L88 84 Z" fill="none" stroke="#a78bfa" stroke-width="7" stroke-linejoin="round"/>
+  <circle cx="64" cy="84" r="6" fill="#34c759"/>
+  <path d="M52 68 H76" stroke="#64d2ff" stroke-width="5" stroke-linecap="round"/>
+  <text x="64" y="112" fill="#d8b4fe" font-family="Poppins, ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="700" text-anchor="middle">RoR</text>
+</svg>
