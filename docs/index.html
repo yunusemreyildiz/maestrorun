@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>maestRoRun · Local Maestro runner</title>
     <meta name="description" content="Lightweight local Maestro automation runner for Android Emulator and iOS Simulator with dashboard, reports, and Slack alerts." />
+    <meta name="theme-color" content="#0b0c0f" />
     <meta property="og:title" content="maestRoRun" />
     <meta property="og:description" content="Local Maestro runner with dashboard, reports, and Slack alerts." />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://yunusemreyildiz.github.io/maestrorun/assets/social-card.svg" />
     <meta name="github-repo" content="yunusemreyildiz/maestrorun" />
+    <link rel="icon" href="./assets/logo-mark.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -16,7 +19,8 @@
       :root {
         color-scheme: dark;
         --bg: #0b0c0f;
-        --surface: rgba(25, 27, 34, 0.82);
+        --surface: rgba(25, 27, 34, 0.88);
+        --surface-strong: rgba(38, 41, 50, 0.94);
         --text: #f7f7f8;
         --muted: #9ba3b1;
         --border: rgba(255, 255, 255, 0.1);
@@ -26,107 +30,344 @@
         --ror-strong: #7c3aed;
         --pass: #34c759;
         --shadow: rgba(0, 0, 0, 0.34);
+        --glass: blur(20px) saturate(160%);
       }
 
       * { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; }
 
       body {
         margin: 0;
         font-family: Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         background:
-          radial-gradient(circle at top right, rgba(124, 58, 237, 0.18), transparent 28%),
-          radial-gradient(circle at 20% 80%, rgba(0, 122, 255, 0.12), transparent 24%),
+          radial-gradient(circle at 85% 8%, rgba(124, 58, 237, 0.22), transparent 24%),
+          radial-gradient(circle at 12% 18%, rgba(0, 122, 255, 0.14), transparent 22%),
+          radial-gradient(circle at 50% 100%, rgba(124, 58, 237, 0.08), transparent 30%),
           var(--bg);
         color: var(--text);
         line-height: 1.6;
       }
 
-      a { color: var(--accent); text-decoration: none; }
-      a:hover { color: var(--ror); }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: radial-gradient(circle at center, black, transparent 92%);
+      }
 
+      a { color: inherit; text-decoration: none; }
+
+      .topnav {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: var(--glass);
+        background: rgba(11, 12, 15, 0.72);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .topnav-inner,
       .wrap {
-        width: min(1080px, calc(100% - 40px));
+        width: min(1120px, calc(100% - 32px));
         margin: 0 auto;
-        padding: 48px 0 80px;
       }
 
-      .hero {
-        text-align: center;
-        padding: 24px 0 56px;
-      }
-
-      .hero img {
-        width: min(820px, 100%);
-        height: auto;
-        border-radius: 28px;
-        box-shadow: 0 24px 80px var(--shadow);
-      }
-
-      .nav {
+      .topnav-inner {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 12px 20px;
-        margin: 28px 0 0;
-        font-size: 0.95rem;
-        font-weight: 600;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 0;
       }
 
-      .nav a {
-        color: var(--text);
-        opacity: 0.92;
-      }
-
-      .badges {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-        margin-top: 24px;
-      }
-
-      .badge {
+      .brand {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 8px 14px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: rgba(255, 255, 255, 0.03);
-        color: var(--muted);
-        font-size: 0.82rem;
-        font-weight: 600;
-      }
-
-      .section {
-        margin-top: 56px;
-      }
-
-      .section h2 {
-        margin: 0 0 12px;
-        font-size: 1.6rem;
+        gap: 12px;
+        font-weight: 800;
         letter-spacing: -0.03em;
       }
 
-      .section p.lead {
-        margin: 0 0 28px;
+      .brand img {
+        width: 36px;
+        height: 36px;
+      }
+
+      .brand-roR { color: var(--ror); }
+
+      .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px 18px;
+        font-size: 0.92rem;
+        font-weight: 600;
         color: var(--muted);
+      }
+
+      .nav-links a:hover { color: var(--text); }
+
+      .wrap {
+        padding: 36px 0 88px;
+      }
+
+      .hero {
+        position: relative;
+        padding: 36px 0 18px;
+      }
+
+      .hero-panel {
+        position: relative;
+        overflow: hidden;
+        padding: 42px 42px 36px;
+        border-radius: 32px;
+        border: 1px solid rgba(167, 139, 250, 0.18);
+        background:
+          linear-gradient(180deg, rgba(124, 58, 237, 0.12), rgba(255, 255, 255, 0.02)),
+          var(--surface);
+        box-shadow: 0 28px 90px rgba(0, 0, 0, 0.35);
+      }
+
+      .hero-panel::after {
+        content: "";
+        position: absolute;
+        inset: auto -80px -120px auto;
+        width: 280px;
+        height: 280px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(124, 58, 237, 0.28), transparent 68%);
+        pointer-events: none;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--accent-strong);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .hero-title {
+        margin: 0;
+        font-size: clamp(2.8rem, 7vw, 4.6rem);
+        line-height: 0.98;
+        letter-spacing: -0.05em;
+        font-weight: 800;
+      }
+
+      .hero-copy {
+        margin: 18px 0 0;
+        max-width: 720px;
+        color: var(--muted);
+        font-size: 1.08rem;
+      }
+
+      .hero-actions,
+      .badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .hero-actions {
+        margin-top: 28px;
+      }
+
+      .badges {
+        margin-top: 24px;
+      }
+
+      .badge,
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        font-weight: 700;
+      }
+
+      .badge {
+        padding: 8px 14px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .button {
+        padding: 13px 22px;
+        font-size: 0.94rem;
+        border: 1px solid transparent;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      }
+
+      .button:hover { transform: translateY(-1px); }
+
+      .button.primary {
+        background: linear-gradient(135deg, var(--ror-strong), #9333ea);
+        color: white;
+        box-shadow: 0 12px 30px rgba(124, 58, 237, 0.28);
+      }
+
+      .button.secondary {
+        border-color: var(--border);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text);
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 28px;
+        margin-top: 28px;
+        align-items: stretch;
+      }
+
+      .preview {
+        position: relative;
+        padding: 18px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(11, 12, 15, 0.72);
+        min-height: 280px;
+      }
+
+      .preview-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .window-dots {
+        display: inline-flex;
+        gap: 7px;
+      }
+
+      .window-dots span {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.16);
+      }
+
+      .window-dots span:nth-child(1) { background: #ff5f57; }
+      .window-dots span:nth-child(2) { background: #febc2e; }
+      .window-dots span:nth-child(3) { background: #28c840; }
+
+      .preview-label {
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 600;
+      }
+
+      .preview-card {
+        padding: 16px;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.03);
+        margin-bottom: 12px;
+      }
+
+      .preview-card strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 0.92rem;
+      }
+
+      .preview-card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.84rem;
+      }
+
+      .status-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .status-pill {
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.74rem;
+        font-weight: 700;
+      }
+
+      .status-pill.pass {
+        color: var(--pass);
+        background: rgba(52, 199, 89, 0.12);
+      }
+
+      .status-pill.run {
+        color: var(--ror);
+        background: rgba(167, 139, 250, 0.12);
+      }
+
+      .section {
+        margin-top: 72px;
+        scroll-margin-top: 88px;
+      }
+
+      .section-head {
         max-width: 760px;
+        margin-bottom: 28px;
+      }
+
+      .section-head h2 {
+        margin: 0 0 10px;
+        font-size: clamp(1.7rem, 4vw, 2.3rem);
+        letter-spacing: -0.04em;
+      }
+
+      .section-head p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 1.02rem;
       }
 
       .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 18px;
       }
 
       .card {
-        padding: 22px;
-        border-radius: 22px;
+        padding: 24px;
+        border-radius: 24px;
         border: 1px solid var(--border);
         background: var(--surface);
-        backdrop-filter: blur(20px) saturate(160%);
         box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+        transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(167, 139, 250, 0.28);
+        background: var(--surface-strong);
+      }
+
+      .card-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        margin-bottom: 16px;
+        border-radius: 14px;
+        background: rgba(124, 58, 237, 0.14);
+        color: var(--ror);
+        font-size: 1.1rem;
+        font-weight: 800;
       }
 
       .card h3 {
@@ -140,69 +381,111 @@
         font-size: 0.95rem;
       }
 
-      .code {
-        margin-top: 18px;
-        padding: 18px 20px;
-        border-radius: 18px;
-        border: 1px solid rgba(167, 139, 250, 0.22);
-        background: rgba(124, 58, 237, 0.08);
-        overflow-x: auto;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 0.92rem;
-        line-height: 1.7;
+      .pipeline {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        position: relative;
       }
 
-      .cta-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 14px;
-        margin-top: 28px;
+      .pipeline-step {
+        position: relative;
+        padding: 24px;
+        border-radius: 24px;
+        border: 1px solid rgba(167, 139, 250, 0.18);
+        background: linear-gradient(180deg, rgba(124, 58, 237, 0.08), rgba(255, 255, 255, 0.02));
       }
 
-      .button {
+      .pipeline-step .step-no {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 12px 20px;
+        width: 34px;
+        height: 34px;
+        margin-bottom: 14px;
+        border-radius: 12px;
+        background: rgba(124, 58, 237, 0.18);
+        color: var(--ror);
+        font-size: 0.86rem;
+        font-weight: 800;
+      }
+
+      .pipeline-step h3 {
+        margin: 0 0 8px;
+        font-size: 1.05rem;
+      }
+
+      .pipeline-step p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.94rem;
+      }
+
+      .terminal {
+        border-radius: 24px;
+        overflow: hidden;
+        border: 1px solid rgba(167, 139, 250, 0.18);
+        background: rgba(11, 12, 15, 0.92);
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+      }
+
+      .terminal-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 18px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .terminal-title {
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 600;
+      }
+
+      .copy-btn {
+        padding: 7px 12px;
+        border: 1px solid var(--border);
         border-radius: 999px;
-        font-weight: 700;
-        font-size: 0.92rem;
-        border: 1px solid transparent;
-      }
-
-      .button.primary {
-        background: linear-gradient(135deg, var(--ror-strong), #9333ea);
-        color: white;
-      }
-
-      .button.secondary {
-        border-color: var(--border);
         background: rgba(255, 255, 255, 0.04);
         color: var(--text);
+        font: inherit;
+        font-size: 0.78rem;
+        font-weight: 700;
+        cursor: pointer;
       }
 
-      .flow {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 14px;
-        margin-top: 18px;
-      }
-
-      .flow-step {
-        padding: 18px;
-        border-radius: 18px;
-        border: 1px dashed rgba(167, 139, 250, 0.28);
-        background: rgba(255, 255, 255, 0.02);
-      }
-
-      .flow-step strong {
-        display: block;
-        margin-bottom: 6px;
+      .copy-btn:hover {
+        border-color: rgba(167, 139, 250, 0.35);
         color: var(--ror);
       }
 
+      pre {
+        margin: 0;
+        padding: 22px 24px 24px;
+        overflow-x: auto;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.92rem;
+        line-height: 1.75;
+        color: #ececf1;
+      }
+
+      .line-comment { color: #7d8590; }
+      .line-cmd { color: #79c0ff; }
+      .line-url { color: #a5d6ff; }
+
+      .note {
+        margin-top: 16px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .note strong { color: var(--text); }
+
       .footer {
-        margin-top: 72px;
+        margin-top: 88px;
         padding-top: 28px;
         border-top: 1px solid var(--border);
         display: flex;
@@ -213,117 +496,213 @@
         font-size: 0.9rem;
       }
 
-      @media (max-width: 760px) {
-        .flow { grid-template-columns: 1fr; }
+      .footer a { color: var(--accent); }
+
+      @media (max-width: 920px) {
+        .hero-grid,
+        .grid,
+        .pipeline {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-panel {
+          padding: 28px 24px 24px;
+        }
+
+        .nav-links {
+          display: none;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="wrap">
-      <header class="hero">
-        <img src="./assets/banner.svg" alt="maestRoRun" />
-        <nav class="nav" aria-label="Primary">
+    <header class="topnav">
+      <div class="topnav-inner">
+        <a class="brand" href="#top">
+          <img src="./assets/logo-mark.svg" alt="" />
+          <span>maest<span class="brand-roR">RoR</span>un</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
           <a href="#features">Features</a>
-          <a href="#quick-start">Quick Start</a>
           <a href="#architecture">Architecture</a>
-          <a id="github-nav-link" href="#">GitHub</a>
-          <a href="https://maestro.mobile.dev/">Maestro</a>
+          <a href="#quick-start">Quick Start</a>
+          <a id="github-nav-link" href="https://github.com/yunusemreyildiz/maestrorun">GitHub</a>
         </nav>
-        <div class="badges">
-          <span class="badge">Node.js 20+</span>
-          <span class="badge">Android Emulator</span>
-          <span class="badge">iOS Simulator</span>
-          <span class="badge">Slack Webhooks</span>
-          <span class="badge">React Dashboard</span>
-        </div>
-      </header>
+      </div>
+    </header>
 
-      <section class="section" id="intro">
-        <h2>Local Maestro automation, with a dashboard worth opening</h2>
-        <p class="lead">
-          maestRoRun wraps Maestro with Node.js orchestration, saved tests and suites, local reports,
-          optional Slack summaries, and a React dashboard that helps you run mobile flows without
-          rebuilding your own tooling every sprint.
-        </p>
-        <div class="cta-row">
-          <a class="button primary" id="github-cta-link" href="#">View on GitHub</a>
-          <a class="button secondary" href="#quick-start">Get Started</a>
+    <main class="wrap" id="top">
+      <section class="hero">
+        <div class="hero-panel">
+          <p class="eyebrow">Local mobile automation · short name RoR</p>
+          <h1 class="hero-title">maest<span class="brand-roR">RoR</span>un</h1>
+          <p class="hero-copy">
+            Run Maestro flows on Android Emulator and iOS Simulator with a dashboard that feels as polished
+            as the runner itself — reports, Slack summaries, saved suites, and nightly cron included.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" id="github-cta-link" href="https://github.com/yunusemreyildiz/maestrorun">View on GitHub</a>
+            <a class="button secondary" href="#quick-start">Get Started</a>
+          </div>
+          <div class="badges">
+            <span class="badge">Node.js 20+</span>
+            <span class="badge">Android Emulator</span>
+            <span class="badge">iOS Simulator</span>
+            <span class="badge">Slack Webhooks</span>
+            <span class="badge">React Dashboard</span>
+          </div>
+        </div>
+
+        <div class="hero-grid">
+          <div class="preview">
+            <div class="preview-top">
+              <div class="window-dots" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="preview-label">Dashboard preview</span>
+            </div>
+            <div class="preview-card">
+              <strong>Android Login Smoke</strong>
+              <p>Trigger saved flows, inspect reports, and manage local `.env` settings from one UI.</p>
+            </div>
+            <div class="preview-card">
+              <strong>Nightly Regression Suite</strong>
+              <p>Schedule cron from the dashboard and collect JSON/JUnit output under <code>reports/</code>.</p>
+            </div>
+            <div class="status-row">
+              <span class="status-pill pass">Passed · 12 flows</span>
+              <span class="status-pill run">Slack summary ready</span>
+            </div>
+          </div>
+
+          <div class="preview">
+            <div class="preview-top">
+              <div class="window-dots" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="preview-label">Why teams use it</span>
+            </div>
+            <div class="preview-card">
+              <strong>Starter-safe repo</strong>
+              <p>No private flows, credentials, or proprietary library data ship with the public repo.</p>
+            </div>
+            <div class="preview-card">
+              <strong>Built for Maestro</strong>
+              <p>Keep YAML in <code>flows/</code>, save tests from the UI, and run locally without cloud lock-in.</p>
+            </div>
+            <div class="status-row">
+              <span class="status-pill run">macOS · Windows · iOS on macOS</span>
+            </div>
+          </div>
         </div>
       </section>
 
       <section class="section" id="features">
-        <h2>Features</h2>
-        <p class="lead">Everything you need to run Maestro locally and keep the team in the loop.</p>
+        <div class="section-head">
+          <h2>Everything you need to run Maestro locally</h2>
+          <p>Dashboard-first workflow, local reports, optional Slack alerts, and cron scheduling without extra glue code.</p>
+        </div>
         <div class="grid">
           <article class="card">
+            <div class="card-icon">UI</div>
             <h3>Dashboard-first workflow</h3>
-            <p>Trigger runs, manage saved tests/suites, inspect reports, and edit local settings from one UI.</p>
+            <p>Trigger runs, manage saved tests and suites, inspect reports, and edit local settings from one UI.</p>
           </article>
           <article class="card">
+            <div class="card-icon">A/i</div>
             <h3>Android & iOS ready</h3>
             <p>Run against Android Emulator and iOS Simulator with device discovery built into the dashboard.</p>
           </article>
           <article class="card">
+            <div class="card-icon">R</div>
             <h3>Reports & screenshots</h3>
-            <p>Store JSON summaries, JUnit output, and Maestro debug screenshots under `reports/`.</p>
+            <p>Store JSON summaries, JUnit output, and Maestro debug screenshots under the reports directory.</p>
           </article>
           <article class="card">
+            <div class="card-icon">S</div>
             <h3>Slack summaries</h3>
             <p>Send run summaries through Incoming Webhooks when a test batch finishes.</p>
           </article>
           <article class="card">
+            <div class="card-icon">⏱</div>
             <h3>Nightly scheduling</h3>
             <p>Save, install, or remove a local cron entry directly from the dashboard.</p>
           </article>
           <article class="card">
-            <h3>Starter-safe repo</h3>
-            <p>No private flows, credentials, or proprietary library data ship with the public repo.</p>
+            <div class="card-icon">✓</div>
+            <h3>Open starter repo</h3>
+            <p>Clone, install, open the dashboard, then plug in your own app IDs, binaries, and Maestro flows.</p>
           </article>
         </div>
       </section>
 
       <section class="section" id="architecture">
-        <h2>Architecture</h2>
-        <p class="lead">A small stack with a clear split between UI, orchestration, and Maestro execution.</p>
-        <div class="flow">
-          <div class="flow-step">
-            <strong>1. Dashboard</strong>
-            React + Vite UI for config, library, reports, and run controls.
-          </div>
-          <div class="flow-step">
-            <strong>2. API</strong>
-            Express server orchestrates devices, env, reports, and cron.
-          </div>
-          <div class="flow-step">
-            <strong>3. Maestro</strong>
-            Executes YAML flows on Android Emulator or iOS Simulator.
-          </div>
+        <div class="section-head">
+          <h2>Simple architecture, clear responsibilities</h2>
+          <p>A small stack with a clean split between UI, orchestration, and Maestro execution.</p>
+        </div>
+        <div class="pipeline">
+          <article class="pipeline-step">
+            <div class="step-no">01</div>
+            <h3>Dashboard</h3>
+            <p>React + Vite UI for config, library, reports, and run controls.</p>
+          </article>
+          <article class="pipeline-step">
+            <div class="step-no">02</div>
+            <h3>API</h3>
+            <p>Express server orchestrates devices, env, reports, and cron.</p>
+          </article>
+          <article class="pipeline-step">
+            <div class="step-no">03</div>
+            <h3>Maestro</h3>
+            <p>Executes YAML flows on Android Emulator or iOS Simulator.</p>
+          </article>
         </div>
       </section>
 
       <section class="section" id="quick-start">
-        <h2>Quick Start</h2>
-        <p class="lead">Clone the repo, install dependencies, copy the example env file, and open the dashboard.</p>
-        <div class="code">npm install
-cp .env.example .env
-npm run dashboard</div>
-        <p class="lead" style="margin-top: 18px;">Then open <strong>http://127.0.0.1:5173</strong>.</p>
+        <div class="section-head">
+          <h2>Quick Start</h2>
+          <p>Clone the repo, install dependencies, copy the example env file, and open the dashboard.</p>
+        </div>
+        <div class="terminal">
+          <div class="terminal-bar">
+            <span class="terminal-title">Terminal · maestRoRun setup</span>
+            <button class="copy-btn" type="button" data-copy-target="#setup-commands">Copy</button>
+          </div>
+          <pre id="setup-commands"><span class="line-comment"># clone and install</span>
+<span class="line-cmd">git clone</span> https://github.com/yunusemreyildiz/maestrorun.git
+<span class="line-cmd">cd</span> maestrorun
+<span class="line-cmd">npm install</span>
+<span class="line-cmd">cp</span> .env.example .env
+<span class="line-cmd">npm run dashboard</span>
+
+<span class="line-comment"># then open</span>
+<span class="line-url">http://127.0.0.1:5173</span></pre>
+        </div>
+        <p class="note">Then open <strong>http://127.0.0.1:5173</strong>. Real device execution also needs Maestro CLI, Java 17+, and platform tooling from the dashboard setup guide.</p>
       </section>
 
       <footer class="footer">
         <span>maestRoRun · short name RoR</span>
-        <span>Inspired by polished open-source landing pages like <a href="https://github.com/appium/appium">Appium</a>.</span>
+        <span>Landing page inspired by polished open-source projects like <a href="https://github.com/appium/appium">Appium</a>.</span>
       </footer>
-    </div>
+    </main>
+
     <script>
-      const repo = document.querySelector('meta[name="github-repo"]')?.content;
-      if (repo && !repo.startsWith('YOUR_')) {
-        const url = `https://github.com/${repo}`;
-        for (const id of ['github-nav-link', 'github-cta-link']) {
-          const link = document.getElementById(id);
-          if (link) link.href = url;
+      const copyButton = document.querySelector('[data-copy-target]');
+      copyButton?.addEventListener('click', async () => {
+        const target = document.querySelector(copyButton.dataset.copyTarget);
+        if (!target) return;
+        const text = target.textContent.trim();
+        try {
+          await navigator.clipboard.writeText(text);
+          copyButton.textContent = 'Copied';
+          setTimeout(() => { copyButton.textContent = 'Copy'; }, 1400);
+        } catch {
+          copyButton.textContent = 'Copy failed';
         }
-      }
+      });
     </script>
   </body>
 </html>

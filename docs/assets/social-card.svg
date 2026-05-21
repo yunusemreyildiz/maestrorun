@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="maestRoRun">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0c0f"/>
+      <stop offset="55%" stop-color="#15121f"/>
+      <stop offset="100%" stop-color="#1a1030"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="980" cy="120" r="160" fill="#7c3aed" opacity="0.14"/>
+  <circle cx="180" cy="520" r="120" fill="#007aff" opacity="0.10"/>
+  <rect x="88" y="180" width="96" height="96" rx="28" fill="rgba(124,58,237,0.16)" stroke="rgba(167,139,250,0.35)" stroke-width="2"/>
+  <path d="M118 250 L136 205 L154 250 Z" fill="none" stroke="#a78bfa" stroke-width="6" stroke-linejoin="round"/>
+  <circle cx="136" cy="250" r="6" fill="#34c759"/>
+  <text x="220" y="250" fill="#f7f7f8" font-family="Arial, Helvetica, sans-serif" font-size="92" font-weight="700">maest</text>
+  <text x="520" y="250" fill="#a78bfa" font-family="Arial, Helvetica, sans-serif" font-size="92" font-weight="700">RoR</text>
+  <text x="690" y="250" fill="#f7f7f8" font-family="Arial, Helvetica, sans-serif" font-size="92" font-weight="700">un</text>
+  <text x="220" y="320" fill="#9ba3b1" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="500">Local Maestro runner with dashboard, reports, and Slack alerts</text>
+  <rect x="220" y="360" width="360" height="54" rx="27" fill="rgba(124,58,237,0.18)" stroke="rgba(167,139,250,0.28)"/>
+  <text x="400" y="396" fill="#d8b4fe" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" text-anchor="middle">Android · iOS · Node · React</text>
+</svg>
